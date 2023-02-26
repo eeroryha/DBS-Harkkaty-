@@ -1,20 +1,19 @@
 CREATE TABLE Player (
 	playerid INT NOT NULL PRIMARY KEY,
-	name VARCHAR(20) NOT NULL,
-	teamid INT,
-	position VARCHAR(3),
-	games_played INT
+	name VARCHAR(20) NOT NULL
 	);
 	
 CREATE TABLE Team (
 	teamid INT NOT NULL PRIMARY KEY,
-	name VARCHAR (3),
-	games_played INT
+	name VARCHAR (20),
+	abbr VARCHAR (3)
 	);
 
 CREATE TABLE Season (
 	seasonid INT,
-	playerid INT
+	playerid INT,
+	teamid INT,
+	position VARCHAR (3)
 	);
 
 CREATE TABLE Skaterstats (
@@ -24,6 +23,7 @@ CREATE TABLE Skaterstats (
    --team VARCHAR (3),
    --position VARCHAR (3),
    situation VARCHAR (5),
+   games_played INT,
    icetime INT,
    shifts INT,
    gamescore DECIMAL (5,3),
