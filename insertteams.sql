@@ -6,7 +6,7 @@ INSERT INTO Team VALUES
   (5,"Calgary Flames","CGY"),
   (6,"Carolina Hurricanes","CAR"),
   (7,"Chicago Blackhawks","CHI"),
-  (8,"Colorado Avalanche","COL "),
+  (8,"Colorado Avalanche","COL"),
   (9,"Columbus Blue Jackets","CBJ"),
   (10,"Dallas Stars","DAL"),
   (11,"Detroit Red Wings","DET"),
