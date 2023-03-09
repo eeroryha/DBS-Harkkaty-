@@ -1,39 +1,52 @@
-
+-- CREATE TABLES:
 CREATE TABLE Player (
 	playerid INT NOT NULL PRIMARY KEY,
-	name VARCHAR(20) NOT NULL
+	name VARCHAR(20) NOT NULL,
+	birthdate VARCHAR(20),
+	nationality VARCHAR(3),
+	shootscatches VARCHAR(3),
+	jerseynumber INT
 	);
 	
 CREATE TABLE Team (
 	teamid INT NOT NULL PRIMARY KEY,
-	name VARCHAR (25),
-	abbr VARCHAR (3)
+	name VARCHAR (25) NOT NULL UNIQUE,
+	abbr VARCHAR (3) NOT NULL UNIQUE
 	);
 CREATE TABLE Season (
-	seasonid INT NOT NULL PRIMARY KEY
+	seasonid INT NOT NULL PRIMARY KEY,
+	lockout BOOLEAN DEFAULT false
 );
 
 CREATE TABLE PlayersInSeason (
-	seasonid INT NOT NULL,
-	playerid INT NOT NULL,
-	teamid INT NOT NULL,
+	FK_seasonid INT NOT NULL,
+	FK_playerid INT NOT NULL,
+	FK_teamid INT NOT NULL,
 	position VARCHAR (3),
-	FOREIGN KEY (seasonid) REFERENCES Season (seasonid),
-	FOREIGN KEY (playerid) REFERENCES Player (playerid)
+	games_played INT,
+	FOREIGN KEY (FK_seasonid) REFERENCES Season (seasonid)
+		ON DELETE CASCADE,
+	FOREIGN KEY (FK_playerid) REFERENCES Player (playerid)
+		ON DELETE CASCADE,
+	FOREIGN KEY (FK_teamid) REFERENCES Team (teamid)
+		ON DELETE CASCADE,
+	CHECK (games_played>0)
 	);
 	
 CREATE TABLE TeamsInSeason (
-	seasonid INT NOT NULL,
-	teamid INT NOT NULL,
-	FOREIGN KEY (seasonid) REFERENCES Season (seasonid),
-	FOREIGN KEY (teamid) REFERENCES Team (teamid)
+	FK_seasonid INT NOT NULL,
+	FK_teamid INT NOT NULL,
+	games_played INT,
+	FOREIGN KEY (FK_seasonid) REFERENCES Season (seasonid)
+		ON DELETE CASCADE,
+	FOREIGN KEY (FK_teamid) REFERENCES Team (teamid)
+		ON DELETE CASCADE
 	);
 	
 CREATE TABLE Skaterstats (
    FK_playerid INT NOT NULL,
    FK_seasonid INT NOT NULL,
    situation VARCHAR (5),
-   games_played INT,
    icetime INT,
    shifts INT,
    gamescore DECIMAL (5,3),
@@ -181,8 +194,10 @@ CREATE TABLE Skaterstats (
    corsiagainstaftershifts DECIMAL (5,3),
    fenwickforaftershifts DECIMAL (5,3),
    fenwickagainstaftershifts DECIMAL (5,3),
-   FOREIGN KEY (FK_playerid) REFERENCES Player (playerid),
+   FOREIGN KEY (FK_playerid) REFERENCES Player (playerid)
+		ON DELETE CASCADE,
    FOREIGN KEY (FK_seasonid) REFERENCES Season (seasonid)
+		ON DELETE CASCADE
    );
   
 
@@ -190,7 +205,6 @@ CREATE TABLE Goaliestats (
    FK_playerid INT NOT NULL,
    FK_seasonid INT NOT NULL,
    situation VARCHAR (5),
-   games_played INT,
    icetime DECIMAL (6,3),
    xgoals DECIMAL (6,3),
    goals INT,
@@ -220,16 +234,17 @@ CREATE TABLE Goaliestats (
    blocked_shot_attempts DECIMAL (6,3),
    penalityminutes INT,
    penalties INT,
-   FOREIGN KEY (FK_playerid) REFERENCES Player (playerid),
+   FOREIGN KEY (FK_playerid) REFERENCES Player (playerid)
+		ON DELETE CASCADE,
    FOREIGN KEY (FK_seasonid) REFERENCES Season (seasonid)
-);
+		ON DELETE CASCADE
+	);
 
 
 CREATE TABLE Teamstats ( 
-   teamid INT NOT NULL,
-   seasonid INT NOT NULL,
+   FK_teamid INT NOT NULL,
+   FK_seasonid INT NOT NULL,
    situation VARCHAR (5),
-   games_played INT,
    xgoalspercentage DECIMAL (6,3),
    corsipercentage DECIMAL (6,3),
    fenwickpercentage DECIMAL (6,3),
@@ -330,7 +345,15 @@ CREATE TABLE Teamstats (
    totalshotcreditagainst DECIMAL (6,3),
    scoreadjustedtotalshotcreditagainst DECIMAL (6,3),
    scoreflurryadjustedtotalshotcreditagainst DECIMAL (6,3),
-   FOREIGN KEY (seasonid) REFERENCES Season (seasonid),
-   FOREIGN KEY (teamid) REFERENCES Team (teamid)
+   FOREIGN KEY (FK_seasonid) REFERENCES Season (seasonid)
+		ON DELETE CASCADE,
+   FOREIGN KEY (FK_teamid) REFERENCES Team (teamid)
+		ON DELETE CASCADE
 );
 
+-- CREATE INDICES
+CREATE INDEX PlayersInSeasonIndex ON PlayersInSeason(FK_seasonid,FK_playerid,FK_teamid);
+CREATE INDEX TeamsInSeasonIndex ON TeamsInSeason(FK_seasonid,FK_teamid);
+CREATE INDEX SkaterstatsIndex ON Skaterstats(FK_playerid,FK_seasonid);
+CREATE INDEX GoaliestatsIndex ON Goaliestats(FK_playerid,FK_seasonid);
+CREATE INDEX TeamstatsIndex ON Teamstats(FK_teamid,FK_seasonid);
