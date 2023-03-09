@@ -276,8 +276,8 @@ CREATE TABLE Teamstats (
    penalityminutesfor INT,
    faceoffswonfor INT,
    hitsfor INT,
-   takeawaysfor INT
-   giveawaysfor INT
+   takeawaysfor INT,
+   giveawaysfor INT,
    lowdangershotsfor INT,
    mediumdangershotsfor INT,
    highdangershotsfor INT,
